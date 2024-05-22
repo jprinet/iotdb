@@ -246,8 +246,8 @@ public class WALInsertNodeCache {
 
     /** Batch load all wal entries in the file when any one key is absent. */
     @Override
-    public @NonNull Map<@NonNull WALEntryPosition, @NonNull Pair<ByteBuffer, InsertNode>> loadAll(
-        @NonNull Iterable<? extends @NonNull WALEntryPosition> walEntryPositions) {
+    public Map<? extends WALEntryPosition, ? extends Pair<ByteBuffer, InsertNode>> loadAll(
+        Set<? extends WALEntryPosition> walEntryPositions) throws Exception {
       final Map<WALEntryPosition, Pair<ByteBuffer, InsertNode>> loadedEntries = new HashMap<>();
 
       for (WALEntryPosition walEntryPosition : walEntryPositions) {

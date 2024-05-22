@@ -25,6 +25,7 @@ import org.apache.iotdb.db.queryengine.execution.aggregation.timerangeiterator.T
 import org.apache.tsfile.read.common.TimeRange;
 import org.apache.tsfile.utils.TimeDuration;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.sql.Timestamp;
@@ -217,6 +218,8 @@ public class TimeRangeIteratorTest {
   }
 
   @Test
+  @Ignore(
+      "This test fails for people in time-zones with daylight-saving while daylight-saving is in effect (See GitHub Issue #12537)")
   public void testNaturalMonthTimeRange() {
     String[] res1 = {
       "[ 1604102400000 : 1606694399999 ]",
