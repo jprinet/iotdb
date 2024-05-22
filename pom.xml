@@ -44,7 +44,7 @@
     <properties>
         <airlift-units.version>1.10</airlift-units.version>
         <airlift.version>248</airlift.version>
-        <airline.version>0.9</airline.version>
+        <airline.version>3.0.0</airline.version>
         <antlr4.version>4.13.1</antlr4.version>
         <!-- By default, the argLine is empty-->
         <argLine/>
@@ -854,17 +854,10 @@
                 <artifactId>checker-qual</artifactId>
                 <version>${checker-qual.version}</version>
             </dependency>
-            <!-- TODO: Deprecated: Use Airline 2 or Picocli instead -->
             <dependency>
-                <groupId>io.airlift</groupId>
+                <groupId>com.github.rvesse</groupId>
                 <artifactId>airline</artifactId>
                 <version>${airline.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.inject</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.airlift</groupId>

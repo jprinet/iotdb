@@ -28,16 +28,17 @@ import org.apache.iotdb.service.rpc.thrift.TSFetchResultsReq;
 import org.apache.iotdb.service.rpc.thrift.TSLastDataQueryReq;
 import org.apache.iotdb.service.rpc.thrift.TSRawDataQueryReq;
 
+import com.github.rvesse.airline.Cli;
+import com.github.rvesse.airline.builder.CliBuilder;
+import com.github.rvesse.airline.help.Help;
+import com.github.rvesse.airline.parser.errors.ParseArgumentsMissingException;
+import com.github.rvesse.airline.parser.errors.ParseArgumentsUnexpectedException;
+import com.github.rvesse.airline.parser.errors.ParseCommandMissingException;
+import com.github.rvesse.airline.parser.errors.ParseCommandUnrecognizedException;
+import com.github.rvesse.airline.parser.errors.ParseOptionConversionException;
+import com.github.rvesse.airline.parser.errors.ParseOptionMissingException;
+import com.github.rvesse.airline.parser.errors.ParseOptionMissingValueException;
 import com.google.common.base.Throwables;
-import io.airlift.airline.Cli;
-import io.airlift.airline.Help;
-import io.airlift.airline.ParseArgumentsMissingException;
-import io.airlift.airline.ParseArgumentsUnexpectedException;
-import io.airlift.airline.ParseCommandMissingException;
-import io.airlift.airline.ParseCommandUnrecognizedException;
-import io.airlift.airline.ParseOptionConversionException;
-import io.airlift.airline.ParseOptionMissingException;
-import io.airlift.airline.ParseOptionMissingValueException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tsfile.common.conf.TSFileConfig;
 import org.apache.tsfile.enums.TSDataType;
@@ -315,7 +316,7 @@ public class CommonUtils {
       String[] args,
       String cliName,
       String cliDescription) {
-    Cli.CliBuilder<Runnable> builder = Cli.builder(cliName);
+    CliBuilder<Runnable> builder = Cli.builder(cliName);
 
     builder.withDescription(cliDescription).withDefaultCommand(Help.class).withCommands(commands);
 
