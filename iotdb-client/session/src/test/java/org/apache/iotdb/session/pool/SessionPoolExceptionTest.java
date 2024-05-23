@@ -24,6 +24,7 @@ import org.apache.iotdb.isession.pool.ISessionPool;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.Session;
+import org.apache.iotdb.session.TestUtils;
 
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
@@ -39,7 +40,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +66,7 @@ public class SessionPoolExceptionTest {
   @Mock private Session session;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IllegalAccessException {
     MockitoAnnotations.initMocks(this);
 
     sessionPool =
@@ -79,7 +79,7 @@ public class SessionPoolExceptionTest {
             .build();
     ConcurrentLinkedDeque<ISession> queue = new ConcurrentLinkedDeque<>();
     queue.add(session);
-    Whitebox.setInternalState(sessionPool, "queue", queue);
+    TestUtils.setInternalFieldValue(sessionPool, "queue", queue);
   }
 
   @After
@@ -109,7 +109,8 @@ public class SessionPoolExceptionTest {
     sessionPool.insertRecords(deviceIds, timeList, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test(expected = IoTDBConnectionException.class)
@@ -254,7 +255,7 @@ public class SessionPoolExceptionTest {
   public void testInsertRecords2() throws Exception {
     ConcurrentLinkedDeque<ISession> queue = new ConcurrentLinkedDeque<>();
     queue.add(session);
-    Whitebox.setInternalState(sessionPool, "queue", queue);
+    TestUtils.setInternalFieldValue(sessionPool, "queue", queue);
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =

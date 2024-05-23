@@ -39,6 +39,7 @@ import org.apache.iotdb.service.rpc.thrift.TSFetchMetadataResp;
 import org.apache.iotdb.service.rpc.thrift.TSFetchResultsReq;
 import org.apache.iotdb.service.rpc.thrift.TSFetchResultsResp;
 import org.apache.iotdb.session.Session;
+import org.apache.iotdb.session.TestUtils;
 import org.apache.iotdb.session.template.InternalNode;
 import org.apache.iotdb.session.template.MeasurementNode;
 
@@ -60,7 +61,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -167,7 +167,11 @@ public class SessionPoolTest {
   }
 
   @Before
-  public void setUp() throws IoTDBConnectionException, StatementExecutionException, TException {
+  public void setUp()
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          TException,
+          IllegalAccessException {
     // Initialize the session pool before each test
     MockitoAnnotations.initMocks(this);
     execResp.queryResult = FakedFirstFetchTsBlockResult();
@@ -199,7 +203,7 @@ public class SessionPoolTest {
     queue.add(session);
 
     // set SessionPool's internal field state
-    Whitebox.setInternalState(sessionPool, "queue", queue);
+    TestUtils.setInternalFieldValue(sessionPool, "queue", queue);
   }
 
   @After
@@ -211,7 +215,8 @@ public class SessionPoolTest {
   }
 
   @Test
-  public void testInsertTablet() throws IoTDBConnectionException, StatementExecutionException {
+  public void testInsertTablet()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -226,7 +231,8 @@ public class SessionPoolTest {
     sessionPool.insertTablet(tablet);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
@@ -255,7 +261,8 @@ public class SessionPoolTest {
   }
 
   @Test
-  public void testTestInsertTablet1() throws IoTDBConnectionException, StatementExecutionException {
+  public void testTestInsertTablet1()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -270,11 +277,13 @@ public class SessionPoolTest {
     sessionPool.testInsertTablet(tablet);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testTestInsertTablet2() throws IoTDBConnectionException, StatementExecutionException {
+  public void testTestInsertTablet2()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -289,11 +298,13 @@ public class SessionPoolTest {
     sessionPool.testInsertTablet(tablet, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testTestInsertTablets() throws IoTDBConnectionException, StatementExecutionException {
+  public void testTestInsertTablets()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -310,12 +321,13 @@ public class SessionPoolTest {
     sessionPool.testInsertTablets(map);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testTestInsertTablets2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -332,11 +344,13 @@ public class SessionPoolTest {
     sessionPool.testInsertTablets(map, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testTestInsertRecords() throws IoTDBConnectionException, StatementExecutionException {
+  public void testTestInsertRecords()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
@@ -347,12 +361,13 @@ public class SessionPoolTest {
     sessionPool.testInsertRecords(deviceIds, timeList, measurementsList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testTestInsertRecords2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
@@ -367,20 +382,24 @@ public class SessionPoolTest {
     sessionPool.testInsertRecords(deviceIds, timeList, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testTestInsertRecord() throws IoTDBConnectionException, StatementExecutionException {
+  public void testTestInsertRecord()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.testInsertRecord(
         "device1", 1L, Arrays.asList("temperature", "humidity"), Arrays.asList("11", "12"));
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testTestInsertRecord2() throws IoTDBConnectionException, StatementExecutionException {
+  public void testTestInsertRecord2()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.testInsertRecord(
         "device1",
         1L,
@@ -389,12 +408,13 @@ public class SessionPoolTest {
         Arrays.asList("11", "12"));
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedTablet()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -409,11 +429,13 @@ public class SessionPoolTest {
     sessionPool.insertAlignedTablet(tablet);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testInsertTablets() throws IoTDBConnectionException, StatementExecutionException {
+  public void testInsertTablets()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -430,12 +452,13 @@ public class SessionPoolTest {
     sessionPool.insertTablets(map);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedTablets()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -452,12 +475,13 @@ public class SessionPoolTest {
     sessionPool.insertAlignedTablets(map);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedRecords()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> deviceIds = Arrays.asList("alignedDevice3", "alignedDevice4");
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
@@ -472,12 +496,13 @@ public class SessionPoolTest {
     sessionPool.insertAlignedRecords(deviceIds, timeList, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertRecordsOfOneDevice()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -492,12 +517,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertRecordsOfOneDeviceWithSort()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -512,12 +538,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, typesList, valuesList, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertOneRecordsOfOneDevice2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -532,12 +559,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertOneRecordsOfOneDevice3()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -552,12 +580,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, typesList, valuesList, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedRecordsOfOneDevice()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -572,12 +601,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedRecordsOfOneDevice2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -592,12 +622,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, typesList, valuesList, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertStringRecordsOfOneDevice()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -607,12 +638,13 @@ public class SessionPoolTest {
     sessionPool.insertStringRecordsOfOneDevice("device1", timeList, measurementsList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertStringRecordsOfOneDevice2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -623,12 +655,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, valuesList, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedStringRecordsOfOneDevice()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -639,12 +672,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedStringRecordsOfOneDevice2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
         Arrays.asList(
@@ -655,11 +689,13 @@ public class SessionPoolTest {
         "device1", timeList, measurementsList, valuesList, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testInsertRecords2() throws IoTDBConnectionException, StatementExecutionException {
+  public void testInsertRecords2()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
@@ -670,12 +706,13 @@ public class SessionPoolTest {
     sessionPool.insertRecords(deviceIds, timeList, measurementsList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedRecords2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(1L, 2L);
     List<List<String>> measurementsList =
@@ -687,52 +724,60 @@ public class SessionPoolTest {
     sessionPool.insertAlignedRecords(deviceIds, timeList, measurementsList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testInsertRecord() throws IoTDBConnectionException, StatementExecutionException {
+  public void testInsertRecord()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> measurementsList = Arrays.asList("temperature", "humidity");
     List<TSDataType> typesList = Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE);
     sessionPool.insertRecord("device1", 3L, measurementsList, typesList, "25.0", "50.0");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testInsertRecord2() throws IoTDBConnectionException, StatementExecutionException {
+  public void testInsertRecord2()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> measurementsList = Arrays.asList("temperature", "humidity");
     List<TSDataType> typesList = Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT);
     List<Object> valuesList = Arrays.asList("25.0f", " 50.0f");
     sessionPool.insertRecord("device1", 4L, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testInsertRecord3() throws IoTDBConnectionException, StatementExecutionException {
+  public void testInsertRecord3()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> measurementsList = Arrays.asList("temperature", "humidity");
     List<String> valuesList = Arrays.asList("25.0f", " 50.0f");
     sessionPool.insertRecord("device1", 4L, measurementsList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testGetTimestampPrecision()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.getTimestampPrecision();
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedRecord()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String multiSeriesId = "alignedDevice1";
     long time = 5L;
     List<String> multiMeasurementComponents = Arrays.asList("temperature", "humidity");
@@ -741,12 +786,13 @@ public class SessionPoolTest {
     sessionPool.insertAlignedRecord(multiSeriesId, time, multiMeasurementComponents, types, values);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testInsertAlignedRecord2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String multiSeriesId = "alignedDevice1";
     long time = 5L;
     List<String> multiMeasurementComponents = Arrays.asList("temperature", "humidity");
@@ -754,114 +800,135 @@ public class SessionPoolTest {
     sessionPool.insertAlignedRecord(multiSeriesId, time, multiMeasurementComponents, values);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testDeleteTimeseries() throws IoTDBConnectionException, StatementExecutionException {
+  public void testDeleteTimeseries()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String path = "root.device1.temperature";
     sessionPool.deleteTimeseries(path);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testDeleteTimeseriesList()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.device1.temperature", "root.device1.humidity");
     sessionPool.deleteTimeseries(paths);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testDeleteData() throws IoTDBConnectionException, StatementExecutionException {
+  public void testDeleteData()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String path = "root.device1.temperature";
     long time = 2L;
     sessionPool.deleteData(path, time);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testDeleteData2() throws IoTDBConnectionException, StatementExecutionException {
+  public void testDeleteData2()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.device1.temperature", "root.device1.humidity");
     long time = 3L;
     sessionPool.deleteData(paths, time);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testDeleteData3() throws IoTDBConnectionException, StatementExecutionException {
+  public void testDeleteData3()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.device1.temperature", "root.device1.humidity");
     sessionPool.deleteData(
         paths, System.currentTimeMillis() - 1000 * 60, System.currentTimeMillis());
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testSetStorageGroup() throws IoTDBConnectionException, StatementExecutionException {
+  public void testSetStorageGroup()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.setStorageGroup("root.device1");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testDeleteStorageGroup()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.deleteStorageGroup("root.device1");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testDeleteStorageGroups()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> sgs = Arrays.asList("root.device2", "root.device3");
     sessionPool.deleteStorageGroups(sgs);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testCreateDatabase() throws IoTDBConnectionException, StatementExecutionException {
+  public void testCreateDatabase()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String database = "root.device1.temperature";
     sessionPool.createDatabase(database);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testDeleteDatabase() throws IoTDBConnectionException, StatementExecutionException {
+  public void testDeleteDatabase()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String path = "root.device2.humidity";
     sessionPool.deleteDatabase(path);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testDeleteDatabase2() throws IoTDBConnectionException, StatementExecutionException {
+  public void testDeleteDatabase2()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.device2.temperature", "root.device2.humidity");
     sessionPool.deleteDatabases(paths);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testCreateTimeseries() throws IoTDBConnectionException, StatementExecutionException {
+  public void testCreateTimeseries()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String path = "root.device3.temperature";
     TSDataType dataType = TSDataType.BOOLEAN;
     TSEncoding encoding = TSEncoding.RLE;
@@ -869,11 +936,13 @@ public class SessionPoolTest {
     sessionPool.createTimeseries(path, dataType, encoding, compressor);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testCreateTimeseries2() throws IoTDBConnectionException, StatementExecutionException {
+  public void testCreateTimeseries2()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String path = "root.device3.humidity";
     TSDataType dataType = TSDataType.BOOLEAN;
     TSEncoding encoding = TSEncoding.RLE;
@@ -888,12 +957,13 @@ public class SessionPoolTest {
         path, dataType, encoding, compressor, props, tags, attributes, measurementAlias);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCreateAlignedTimeseries()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String deviceId = "device4";
     List<String> measurements = Arrays.asList("temperature", "humidity");
     List<TSDataType> dataTypes = Arrays.asList(TSDataType.FLOAT, TSDataType.INT32);
@@ -905,12 +975,13 @@ public class SessionPoolTest {
         deviceId, measurements, dataTypes, encodings, compressors, measurementAlias);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCreateAlignedTimeseries2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String deviceId = "device4";
     List<String> measurements = Arrays.asList("temperature", "humidity");
     List<TSDataType> dataTypes = Arrays.asList(TSDataType.FLOAT, TSDataType.INT32);
@@ -932,12 +1003,13 @@ public class SessionPoolTest {
         deviceId, measurements, dataTypes, encodings, compressors, measurementAlias, tags, attrs);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCreateMultiTimeseries()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.device5.temperature", "root.device5.humidity");
     List<TSDataType> dataTypes = Arrays.asList(TSDataType.FLOAT, TSDataType.INT32);
     List<TSEncoding> encodings = Arrays.asList(TSEncoding.RLE, TSEncoding.RLE);
@@ -958,22 +1030,27 @@ public class SessionPoolTest {
         measurementAliasList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCheckTimeseriesExists()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String path = "root.device5.temperature";
     sessionPool.checkTimeseriesExists(path);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCreateSchemaTemplate()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          IOException,
+          IllegalAccessException {
     Template templateShareTime = new Template("template1", true);
     MeasurementNode measurementNode =
         new MeasurementNode(
@@ -1008,12 +1085,16 @@ public class SessionPoolTest {
     iNodeVector.deleteChild(iNodeVector);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCreateSchemaTemplate2()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          IOException,
+          IllegalAccessException {
     List<String> measurements = Arrays.asList("root.ut.temperature", "root.ut.humidity");
     List<String> measurements1 = Arrays.asList("root.ut1.temperature", "root.ut1.humidity");
     List<TSDataType> dataTypes = Arrays.asList(TSDataType.FLOAT, TSDataType.INT32);
@@ -1026,12 +1107,13 @@ public class SessionPoolTest {
         "template4", measurements1, dataTypes, encodings, compressionTypes, true);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCreateSchemaTemplate3()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> schemaNames = Arrays.asList("schema1");
     List<List<String>> measurements =
         Arrays.asList(Arrays.asList("root.ut1.temperature", "root.ut1.humidity"));
@@ -1045,12 +1127,16 @@ public class SessionPoolTest {
         "template3", schemaNames, measurements, dataTypes, encodings, compressionTypes);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testAddAlignedMeasurementsInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          IOException,
+          IllegalAccessException {
     List<String> measurements = Arrays.asList("root.ut2.temperature", "root.ut2.humidity");
     List<TSDataType> dataTypes = Arrays.asList(TSDataType.FLOAT, TSDataType.INT32);
     List<TSEncoding> encodings = Arrays.asList(TSEncoding.PLAIN, TSEncoding.PLAIN);
@@ -1060,12 +1146,16 @@ public class SessionPoolTest {
         "template3", measurements, dataTypes, encodings, compressionTypes);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testAddAlignedMeasurementInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          IOException,
+          IllegalAccessException {
     sessionPool.addAlignedMeasurementInTemplate(
         "template4",
         "root.ut3.temperature",
@@ -1074,12 +1164,16 @@ public class SessionPoolTest {
         CompressionType.SNAPPY);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testAddUnalignedMeasurementsInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          IOException,
+          IllegalAccessException {
     List<String> measurements = Arrays.asList("root.ut4.temperature", "root.ut4.humidity");
     List<TSDataType> dataTypes = Arrays.asList(TSDataType.FLOAT, TSDataType.INT32);
     List<TSEncoding> encodings = Arrays.asList(TSEncoding.PLAIN, TSEncoding.PLAIN);
@@ -1089,12 +1183,16 @@ public class SessionPoolTest {
         "template5", measurements, dataTypes, encodings, compressionTypes);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testAddUnalignedMeasurementInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          IOException,
+          IllegalAccessException {
     sessionPool.addUnalignedMeasurementInTemplate(
         "template5",
         "root.ut5.temperature",
@@ -1103,91 +1201,105 @@ public class SessionPoolTest {
         CompressionType.SNAPPY);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testDeleteNodeInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException, IOException {
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          IOException,
+          IllegalAccessException {
     sessionPool.deleteNodeInTemplate("template1", "root.ut0.sensor1");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCountMeasurementsInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.countMeasurementsInTemplate("template2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testIsMeasurementInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.isMeasurementInTemplate("template2", "root.ut0.sensor2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testIsPathExistInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.isPathExistInTemplate("template2", "root.ut0.sensor2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testShowMeasurementsInTemplate()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.showMeasurementsInTemplate("template2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testShowMeasurementsInTemplate2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.showMeasurementsInTemplate("template2", "root.ut0.**");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testShowAllTemplates() throws IoTDBConnectionException, StatementExecutionException {
+  public void testShowAllTemplates()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.showAllTemplates();
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testShowPathsTemplateSetOn()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.showPathsTemplateSetOn("template2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testShowPathsTemplateUsingOn()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.showPathsTemplateUsingOn("template2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testSortTablet() throws IoTDBConnectionException, StatementExecutionException {
+  public void testSortTablet() throws IoTDBConnectionException, IllegalAccessException {
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
@@ -1202,48 +1314,54 @@ public class SessionPoolTest {
     sessionPool.sortTablet(tablet);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testSetSchemaTemplate() throws IoTDBConnectionException, StatementExecutionException {
+  public void testSetSchemaTemplate()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.setSchemaTemplate("template2", "root.ut0.sensor2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testUnSetSchemaTemplate()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.unsetSchemaTemplate("root.ut0.sensor2", "template2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testDropSchemaTemplate()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.dropSchemaTemplate("template2");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testCreateTimeseriesUsingSchemaTemplate()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> devicePaths = Arrays.asList("root.ut3", "root.ut4");
     sessionPool.createTimeseriesUsingSchemaTemplate(devicePaths);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteQueryStatement2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     String sql = "show version";
     SessionDataSetWrapper sessionDataSetWrapper = null;
     SessionDataSet sessionDataSet =
@@ -1268,95 +1386,104 @@ public class SessionPoolTest {
     sessionPool.closeResultSet(sessionDataSetWrapper);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteQueryStatement3()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.executeQueryStatement("show version");
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteNonQueryStatement()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.executeNonQueryStatement(
         "create timeseries root.test.g_0.d_7815.s_7818 WITH datatype=boolean, encoding=PLAIN");
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteRawDataQuery()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.test.g_0.d_7815.s_7818");
     sessionPool.executeRawDataQuery(
         paths, System.currentTimeMillis() - 1000 * 60 * 24l, System.currentTimeMillis(), 50);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteLastDataQuery()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.test.g_0.d_7815.s_7818");
     sessionPool.executeLastDataQuery(paths, System.currentTimeMillis() - 1000 * 60 * 24l);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteLastDataQuery2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.test.g_0.d_7815.s_7818");
     sessionPool.executeLastDataQuery(paths);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteLastDataQuery3()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("root.test.g_0.d_7815.s_7818");
     sessionPool.executeLastDataQuery(paths, System.currentTimeMillis() - 1000 * 60 * 24l, 50);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteLastDataQueryForOneDevice()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("s_7817", "s_7818");
     sessionPool.executeLastDataQueryForOneDevice(
         "root.test.g_0", "root.test.g_0.d_7818", paths, true);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteAggregationQuery()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("s_7817", "s_7818");
     List<TAggregationType> aggregations =
         Arrays.asList(TAggregationType.MAX_VALUE, TAggregationType.LAST_VALUE);
     sessionPool.executeAggregationQuery(paths, aggregations);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteAggregationQuery2()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("s_7817", "s_7818");
     List<TAggregationType> aggregations =
         Arrays.asList(TAggregationType.MAX_VALUE, TAggregationType.LAST_VALUE);
@@ -1368,12 +1495,13 @@ public class SessionPoolTest {
         500);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testExecuteAggregationQuery3()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("s_7817", "s_7818");
     List<TAggregationType> aggregations =
         Arrays.asList(TAggregationType.MAX_VALUE, TAggregationType.LAST_VALUE);
@@ -1384,12 +1512,13 @@ public class SessionPoolTest {
         System.currentTimeMillis());
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testEexecuteAggregationQuery4()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     List<String> paths = Arrays.asList("s_7817", "s_7818");
     List<TAggregationType> aggregations =
         Arrays.asList(TAggregationType.MAX_VALUE, TAggregationType.LAST_VALUE);
@@ -1402,24 +1531,27 @@ public class SessionPoolTest {
         500 * 1000);
     assertEquals(
         0,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
-  public void testFetchAllConnections() throws IoTDBConnectionException {
+  public void testFetchAllConnections() throws IoTDBConnectionException, IllegalAccessException {
     sessionPool.fetchAllConnections();
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test
   public void testGetBackupConfiguration()
-      throws IoTDBConnectionException, StatementExecutionException {
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     sessionPool.getBackupConfiguration();
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test(expected = StatementExecutionException.class)
@@ -1451,7 +1583,8 @@ public class SessionPoolTest {
     sessionPool.insertRecords(deviceIds, timeList, measurementsList, typesList, valuesList);
     assertEquals(
         1,
-        ((ConcurrentLinkedDeque<ISession>) Whitebox.getInternalState(sessionPool, "queue")).size());
+        ((ConcurrentLinkedDeque<ISession>) TestUtils.getInternalFieldValue(sessionPool, "queue"))
+            .size());
   }
 
   @Test

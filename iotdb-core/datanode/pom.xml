@@ -364,9 +364,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>${iotdb.ut.skip}</skipTests>
-                    <systemProperties>
+                    <systemPropertyVariables>
                         <IOTDB_CONF>src/test/resources</IOTDB_CONF>
-                    </systemProperties>
+                    </systemPropertyVariables>
                     <reuseForks>false</reuseForks>
                     <runOrder>random</runOrder>
                 </configuration>

@@ -63,7 +63,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -82,11 +81,15 @@ public class SessionConnectionTest {
   @Mock private Session session;
 
   @Before
-  public void setUp() throws IoTDBConnectionException, StatementExecutionException, TException {
+  public void setUp()
+      throws IoTDBConnectionException,
+          StatementExecutionException,
+          TException,
+          IllegalAccessException {
     MockitoAnnotations.initMocks(this);
     sessionConnection = new SessionConnection();
-    Whitebox.setInternalState(sessionConnection, "transport", transport);
-    Whitebox.setInternalState(sessionConnection, "client", client);
+    TestUtils.setInternalFieldValue(sessionConnection, "transport", transport);
+    TestUtils.setInternalFieldValue(sessionConnection, "client", client);
     session =
         new Session.Builder()
             .nodeUrls(Collections.singletonList("127.0.0.1:12"))
@@ -94,7 +97,7 @@ public class SessionConnectionTest {
             .password("root")
             .enableAutoFetch(false)
             .build();
-    Whitebox.setInternalState(sessionConnection, "session", session);
+    TestUtils.setInternalFieldValue(sessionConnection, "session", session);
     Mockito.when(transport.isOpen()).thenReturn(true);
     TSStatus tsStatus = new TSStatus(TSStatusCode.REDIRECTION_RECOMMEND.getStatusCode());
     TSStatus tsStatusSuccess = new TSStatus(TSStatusCode.SUCCESS_STATUS.getStatusCode());

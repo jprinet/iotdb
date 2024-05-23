@@ -43,7 +43,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -65,7 +64,8 @@ public class SessionTest {
   @Mock private SessionConnection sessionConnection;
 
   @Before
-  public void setUp() throws IoTDBConnectionException, StatementExecutionException {
+  public void setUp()
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
     MockitoAnnotations.initMocks(this);
     session =
         new Session.Builder()
@@ -75,17 +75,18 @@ public class SessionTest {
             .password("pwd")
             .enableAutoFetch(false)
             .build();
-    Whitebox.setInternalState(session, "defaultSessionConnection", sessionConnection);
+    TestUtils.setInternalFieldValue(session, "defaultSessionConnection", sessionConnection);
     TSQueryTemplateResp resp = new TSQueryTemplateResp();
     resp.setMeasurements(Arrays.asList("root.sg1.d1.s1"));
     Mockito.when(sessionConnection.querySchemaTemplate(any())).thenReturn(resp);
     HashMap<String, TEndPoint> deviceIdToEndpoint = new HashMap<>();
     deviceIdToEndpoint.put("device1", new TEndPoint());
     deviceIdToEndpoint.put("device2", new TEndPoint());
-    Whitebox.setInternalState(session, "deviceIdToEndpoint", deviceIdToEndpoint);
+    TestUtils.setInternalFieldValue(session, "deviceIdToEndpoint", deviceIdToEndpoint);
     HashMap<TEndPoint, SessionConnection> endPointToSessionConnection = new HashMap<>();
     endPointToSessionConnection.put(new TEndPoint(), sessionConnection);
-    Whitebox.setInternalState(session, "endPointToSessionConnection", endPointToSessionConnection);
+    TestUtils.setInternalFieldValue(
+        session, "endPointToSessionConnection", endPointToSessionConnection);
   }
 
   @After
@@ -386,8 +387,8 @@ public class SessionTest {
 
   @Test
   public void testInsertRecordsDirectionException()
-      throws IoTDBConnectionException, StatementExecutionException {
-    Whitebox.setInternalState(session, "enableRedirection", true);
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
+    TestUtils.setInternalFieldValue(session, "enableRedirection", true);
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(2L, 3L);
     List<List<String>> measurementsList =
@@ -400,8 +401,8 @@ public class SessionTest {
 
   @Test
   public void testInsertRecordsNoDirectionException()
-      throws IoTDBConnectionException, StatementExecutionException {
-    Whitebox.setInternalState(session, "enableRedirection", false);
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
+    TestUtils.setInternalFieldValue(session, "enableRedirection", false);
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(2L, 3L);
     List<List<String>> measurementsList =
@@ -444,8 +445,8 @@ public class SessionTest {
 
   @Test
   public void testInsertAlignedRecords()
-      throws IoTDBConnectionException, StatementExecutionException {
-    Whitebox.setInternalState(session, "enableRedirection", false);
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
+    TestUtils.setInternalFieldValue(session, "enableRedirection", false);
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(2L, 6L);
     List<List<String>> measurementsList =
@@ -458,8 +459,8 @@ public class SessionTest {
 
   @Test
   public void testInsertAlignedRecordsEnableRedirection()
-      throws IoTDBConnectionException, StatementExecutionException {
-    Whitebox.setInternalState(session, "enableRedirection", true);
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
+    TestUtils.setInternalFieldValue(session, "enableRedirection", true);
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(2L, 6L);
     List<List<String>> measurementsList =
@@ -515,8 +516,8 @@ public class SessionTest {
 
   @Test
   public void testInsertAlignedRecordsWithTypeException()
-      throws IoTDBConnectionException, StatementExecutionException {
-    Whitebox.setInternalState(session, "enableRedirection", true);
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
+    TestUtils.setInternalFieldValue(session, "enableRedirection", true);
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(2L, 7L);
     List<List<String>> measurementsList =
@@ -533,8 +534,8 @@ public class SessionTest {
 
   @Test
   public void testInsertAlignedRecordsWithType2Exception()
-      throws IoTDBConnectionException, StatementExecutionException {
-    Whitebox.setInternalState(session, "enableRedirection", false);
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
+    TestUtils.setInternalFieldValue(session, "enableRedirection", false);
     List<String> deviceIds = Arrays.asList("device1", "device2");
     List<Long> timeList = Arrays.asList(2L, 7L);
     List<List<String>> measurementsList =
@@ -938,8 +939,8 @@ public class SessionTest {
 
   @Test
   public void testInsertAlignedTabletsSortedEnableRedirection()
-      throws IoTDBConnectionException, StatementExecutionException {
-    Whitebox.setInternalState(session, "enableRedirection", false);
+      throws IoTDBConnectionException, StatementExecutionException, IllegalAccessException {
+    TestUtils.setInternalFieldValue(session, "enableRedirection", false);
     List<MeasurementSchema> schemas = new ArrayList<>();
     MeasurementSchema schema = new MeasurementSchema();
     schema.setMeasurementId("pressure");
