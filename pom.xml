@@ -106,8 +106,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <micrometer.version>1.13.0</micrometer.version>
         <milo.version>0.6.12</milo.version>
-        <!-- It seems that powermock is having issues with the newest mockito versions -->
-        <mockito.version>2.23.4</mockito.version>
+        <mockito.version>5.12.0</mockito.version>
         <moquette.version>0.17</moquette.version>
         <netty.version>4.1.110.Final</netty.version>
         <nimbus-jose-jwt.version>9.39.1</nimbus-jose-jwt.version>
@@ -116,7 +115,6 @@
         <orc-core.version>2.0.1</orc-core.version>
         <osgi.version>7.0.0</osgi.version>
         <pax-jdbc-common.version>1.5.7</pax-jdbc-common.version>
-        <powermock.version>2.0.9</powermock.version>
         <ratis-thirdparty-misc.version>1.0.6</ratis-thirdparty-misc.version>
         <!--
       This is an unreleased version of a custom branch. The 8-character part after the version number
@@ -254,11 +252,6 @@
                 <version>${snappy-java.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-reflect</artifactId>
-                <version>${powermock.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
@@ -349,6 +342,21 @@
                 <version>${jjwt.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>${checker-qual.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.rvesse</groupId>
+                <artifactId>airline</artifactId>
+                <version>${airline.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.airlift</groupId>
+                <artifactId>concurrent</artifactId>
+                <version>${airlift.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.eclipse.milo</groupId>
                 <artifactId>stack-core</artifactId>
                 <version>${milo.version}</version>
@@ -363,21 +371,6 @@
                 <groupId>org.eclipse.milo</groupId>
                 <artifactId>stack-server</artifactId>
                 <version>${milo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.checkerframework</groupId>
-                <artifactId>checker-qual</artifactId>
-                <version>${checker-qual.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.rvesse</groupId>
-                <artifactId>airline</artifactId>
-                <version>${airline.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.airlift</groupId>
-                <artifactId>concurrent</artifactId>
-                <version>${airlift.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.milo</groupId>
@@ -424,21 +417,6 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-core</artifactId>
-                <version>${powermock.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${powermock.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito2</artifactId>
-                <version>${powermock.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nimbusds</groupId>

@@ -27,17 +27,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.Mockito;
 
 import java.util.List;
 
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "javax.management.*"})
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DataRegion.class)
 public class StorageEngineTest {
 
   private StorageEngine storageEngine;
@@ -55,8 +48,8 @@ public class StorageEngineTest {
   @Test
   public void testGetAllDataRegionIds() throws Exception {
     DataRegionId id1 = new DataRegionId(1);
-    DataRegion rg1 = PowerMockito.mock(DataRegion.class);
-    DataRegion rg2 = PowerMockito.mock(DataRegion.class);
+    DataRegion rg1 = Mockito.mock(DataRegion.class);
+    DataRegion rg2 = Mockito.mock(DataRegion.class);
     DataRegionId id2 = new DataRegionId(2);
     storageEngine.setDataRegion(id1, rg1);
     storageEngine.setDataRegion(id2, rg2);
