@@ -66,7 +66,7 @@
         <ctest.skip.tests>false</ctest.skip.tests>
         <disruptor.version>4.0.0</disruptor.version>
         <drill.freemarker.maven.plugin.version>1.21.1</drill.freemarker.maven.plugin.version>
-        <dropqizard.metrics.version>4.2.25</dropqizard.metrics.version>
+        <dropwizard.metrics.version>4.2.25</dropwizard.metrics.version>
         <eclipse-collections.version>11.1.0</eclipse-collections.version>
         <!-- disable enforcer by default-->
         <enforcer.skip>true</enforcer.skip>
@@ -121,7 +121,7 @@
       is for ensuring the SNAPSHOT will stay available. We should however have the Ratis folks do a
       new release soon, as releasing with this version is more than sub-ideal.
     -->
-        <ratis.version>3.1.0-611b80a-SNAPSHOT</ratis.version>
+        <ratis.version>3.1.0-d09cbac-SNAPSHOT</ratis.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <reactor-netty.version>1.1.19</reactor-netty.version>
         <reactor.version>3.6.6</reactor.version>
@@ -521,7 +521,7 @@
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-core</artifactId>
-                <version>${dropqizard.metrics.version}</version>
+                <version>${dropwizard.metrics.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -866,7 +866,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.10</version>
+                    <version>0.8.12</version>
                 </plugin>
                 <plugin>
                     <groupId>com.coderplus.maven.plugins</groupId>

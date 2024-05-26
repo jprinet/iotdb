@@ -22,6 +22,7 @@ import org.apache.iotdb.common.rpc.thrift.TRegionReplicaSet;
 import org.apache.iotdb.commons.path.MeasurementPath;
 import org.apache.iotdb.commons.path.PartialPath;
 import org.apache.iotdb.commons.path.PathDeserializeUtil;
+import org.apache.iotdb.db.queryengine.execution.MemoryEstimationHelper;
 import org.apache.iotdb.db.queryengine.plan.expression.Expression;
 import org.apache.iotdb.db.queryengine.plan.planner.plan.node.PlanNode;
 import org.apache.iotdb.db.queryengine.plan.planner.plan.node.PlanNodeId;
@@ -48,6 +49,9 @@ import java.util.Objects;
  * <p>Children type: no child is allowed for SeriesScanNode
  */
 public class SeriesScanNode extends SeriesScanSourceNode {
+
+  private static final long INSTANCE_SIZE =
+      RamUsageEstimator.shallowSizeOfInstance(SeriesScanNode.class);
 
   // The path of the target series which will be scanned.
   private final MeasurementPath seriesPath;
@@ -193,5 +197,12 @@ public class SeriesScanNode extends SeriesScanSourceNode {
   @Override
   public PartialPath getPartitionPath() {
     return getSeriesPath();
+  }
+
+  @Override
+  public long ramBytesUsed() {
+    return INSTANCE_SIZE
+        + MemoryEstimationHelper.getEstimatedSizeOfAccountableObject(id)
+        + MemoryEstimationHelper.getEstimatedSizeOfPartialPath(seriesPath);
   }
 }

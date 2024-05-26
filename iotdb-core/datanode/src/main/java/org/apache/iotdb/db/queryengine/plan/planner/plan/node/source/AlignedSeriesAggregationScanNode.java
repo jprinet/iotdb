@@ -23,6 +23,7 @@ import org.apache.iotdb.common.rpc.thrift.TRegionReplicaSet;
 import org.apache.iotdb.commons.path.AlignedPath;
 import org.apache.iotdb.commons.path.PartialPath;
 import org.apache.iotdb.commons.path.PathDeserializeUtil;
+import org.apache.iotdb.db.queryengine.execution.MemoryEstimationHelper;
 import org.apache.iotdb.db.queryengine.plan.expression.Expression;
 import org.apache.iotdb.db.queryengine.plan.planner.plan.node.PlanNode;
 import org.apache.iotdb.db.queryengine.plan.planner.plan.node.PlanNodeId;
@@ -46,6 +47,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class AlignedSeriesAggregationScanNode extends SeriesAggregationSourceNode {
+  private static final long INSTANCE_SIZE =
+      RamUsageEstimator.shallowSizeOfInstance(AlignedSeriesAggregationScanNode.class);
 
   // The paths of the target series which will be aggregated.
   private AlignedPath alignedPath;
@@ -292,5 +295,12 @@ public class AlignedSeriesAggregationScanNode extends SeriesAggregationSourceNod
         this.getAlignedPath().getFormattedString(),
         this.getAggregationDescriptorList(),
         PlanNodeUtil.printRegionReplicaSet(getRegionReplicaSet()));
+  }
+
+  @Override
+  public long ramBytesUsed() {
+    return INSTANCE_SIZE
+        + MemoryEstimationHelper.getEstimatedSizeOfAccountableObject(id)
+        + MemoryEstimationHelper.getEstimatedSizeOfPartialPath(alignedPath);
   }
 }
