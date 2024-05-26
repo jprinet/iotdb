@@ -22,7 +22,7 @@ package org.apache.iotdb.confignode.manager.pipe.coordinator.runtime.heartbeat;
 import org.apache.iotdb.commons.pipe.task.meta.PipeMeta;
 import org.apache.iotdb.commons.pipe.task.meta.PipeStaticMeta;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
