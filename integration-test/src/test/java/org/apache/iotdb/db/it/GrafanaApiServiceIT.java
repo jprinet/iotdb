@@ -29,14 +29,15 @@ import org.apache.iotdb.itbase.env.BaseEnv;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -117,7 +118,7 @@ public class GrafanaApiServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(200, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -161,7 +162,7 @@ public class GrafanaApiServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(200, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -195,7 +196,7 @@ public class GrafanaApiServiceIT {
       Assert.assertTrue(timestampsResult.size() == 10);
       Assert.assertTrue(valuesResult.size() == 1);
       Assert.assertTrue("count(root.sg25.s4)".equals(expressionsResult.get(0)));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -248,7 +249,7 @@ public class GrafanaApiServiceIT {
           values1, ((List) (map.get("values")).get(0)).toArray(new Object[] {}));
       Assert.assertArrayEquals(
           values2, ((List) (map.get("values")).get(1)).toArray(new Object[] {}));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -302,7 +303,7 @@ public class GrafanaApiServiceIT {
           values1, ((List) (map.get("values")).get(0)).toArray(new Object[] {}));
       Assert.assertArrayEquals(
           values2, ((List) (map.get("values")).get(1)).toArray(new Object[] {}));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -353,7 +354,7 @@ public class GrafanaApiServiceIT {
           values1, ((List) (map.get("values")).get(0)).toArray(new Object[] {}));
       Assert.assertArrayEquals(
           values2, ((List) (map.get("values")).get(1)).toArray(new Object[] {}));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -381,7 +382,7 @@ public class GrafanaApiServiceIT {
       List list = mapper.readValue(message, List.class);
       String[] expectedResult = {"s4", "s5"};
       Assert.assertArrayEquals(expectedResult, list.toArray(new String[] {}));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {

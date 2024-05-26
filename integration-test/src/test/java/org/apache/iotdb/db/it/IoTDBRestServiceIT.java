@@ -30,14 +30,15 @@ import org.apache.iotdb.itbase.env.BaseEnv;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -107,9 +108,9 @@ public class IoTDBRestServiceIT {
       HttpEntity responseEntity = response.getEntity();
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
-      assertEquals(200, response.getStatusLine().getStatusCode());
+      assertEquals(200, response.getCode());
       assertEquals(200, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -154,7 +155,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(200, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -178,7 +179,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(700, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -202,7 +203,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(200, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -226,7 +227,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(509, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -250,7 +251,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(200, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -289,7 +290,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(200, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -314,7 +315,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(606, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -358,7 +359,7 @@ public class IoTDBRestServiceIT {
       String message = EntityUtils.toString(responseEntity, "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(606, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -751,11 +752,11 @@ public class IoTDBRestServiceIT {
         }
       }
 
-      Assert.assertEquals(401, response.getStatusLine().getStatusCode());
+      Assert.assertEquals(401, response.getCode());
       String message = EntityUtils.toString(response.getEntity(), "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(800, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -798,11 +799,11 @@ public class IoTDBRestServiceIT {
         }
       }
 
-      Assert.assertEquals(401, response.getStatusLine().getStatusCode());
+      Assert.assertEquals(401, response.getCode());
       String message = EntityUtils.toString(response.getEntity(), "utf-8");
       JsonObject result = JsonParser.parseString(message).getAsJsonObject();
       assertEquals(801, Integer.parseInt(result.get("code").toString()));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -904,7 +905,7 @@ public class IoTDBRestServiceIT {
       Assert.assertEquals(values4, valuesResult.get(3));
       Assert.assertEquals(values5, valuesResult.get(4));
       Assert.assertEquals(values6, valuesResult.get(5));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -938,7 +939,7 @@ public class IoTDBRestServiceIT {
       Assert.assertTrue(timestampsResult.size() == 10);
       Assert.assertTrue(valuesResult.size() == 1);
       Assert.assertTrue("count(root.sg25.s4)".equals(expressionsResult.get(0)));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -963,7 +964,7 @@ public class IoTDBRestServiceIT {
       HttpEntity responseEntity = response.getEntity();
       String message = EntityUtils.toString(responseEntity, "utf-8");
       assertTrue(message.contains("row size exceeded the given max row size"));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -990,7 +991,7 @@ public class IoTDBRestServiceIT {
       Map map = mapper.readValue(message, Map.class);
       return map;
 
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -1554,7 +1555,7 @@ public class IoTDBRestServiceIT {
       Assert.assertEquals(values4, valuesResult.get(3));
       Assert.assertEquals(values5, valuesResult.get(4));
       Assert.assertEquals(values6, valuesResult.get(5));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -1588,7 +1589,7 @@ public class IoTDBRestServiceIT {
       Assert.assertTrue(timestampsResult.size() == 10);
       Assert.assertTrue(valuesResult.size() == 1);
       Assert.assertTrue("count(root.sg25.s4)".equals(expressionsResult.get(0)));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -1613,7 +1614,7 @@ public class IoTDBRestServiceIT {
       HttpEntity responseEntity = response.getEntity();
       String message = EntityUtils.toString(responseEntity, "utf-8");
       assertTrue(message.contains("row size exceeded the given max row size"));
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
@@ -1640,7 +1641,7 @@ public class IoTDBRestServiceIT {
       Map map = mapper.readValue(message, Map.class);
       return map;
 
-    } catch (IOException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       fail(e.getMessage());
     } finally {
