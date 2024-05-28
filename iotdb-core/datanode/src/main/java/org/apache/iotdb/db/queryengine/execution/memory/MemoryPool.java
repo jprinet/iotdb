@@ -229,7 +229,8 @@ public class MemoryPool {
     Validate.notNull(planNodeId, "planNodeId can not be null.");
     Validate.isTrue(
         bytesToReserve > 0L && bytesToReserve <= maxBytesPerFragmentInstance,
-        "bytesToReserve should be in (0,maxBytesPerFI]. maxBytesPerFI: %d",
+        "bytesToReserve should be in (0,maxBytesPerFI]. maxBytesPerFI: %d, bytesToReserve: %d",
+        maxBytesPerFragmentInstance,
         bytesToReserve);
     if (bytesToReserve > maxBytesCanReserve) {
       LOGGER.warn(
@@ -269,7 +270,8 @@ public class MemoryPool {
     Validate.notNull(planNodeId, "planNodeId can not be null.");
     Validate.isTrue(
         bytesToReserve > 0L && bytesToReserve <= maxBytesPerFragmentInstance,
-        "bytesToReserve should be in (0,maxBytesPerFI]. maxBytesPerFI: %d",
+        "bytesToReserve should be in (0,maxBytesPerFI]. maxBytesPerFI: %d, bytesToReserve: %d",
+        maxBytesPerFragmentInstance,
         bytesToReserve);
 
     if (tryReserve(queryId, fragmentInstanceId, planNodeId, bytesToReserve, maxBytesCanReserve)) {
