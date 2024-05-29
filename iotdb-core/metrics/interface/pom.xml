@@ -48,12 +48,10 @@
         <dependency>
             <groupId>org.apache.tsfile</groupId>
             <artifactId>common</artifactId>
-            <version>${tsfile.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tsfile</groupId>
             <artifactId>tsfile</artifactId>
-            <version>${tsfile.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

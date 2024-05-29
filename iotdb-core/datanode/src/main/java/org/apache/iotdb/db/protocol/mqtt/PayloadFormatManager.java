@@ -91,7 +91,7 @@ public class PayloadFormatManager {
     }
 
     URL[] jarURLs = getPluginJarURLs(mqttDir);
-    logger.debug("MQTT Plugin jarURLs: {}", jarURLs);
+    logger.debug("MQTT Plugin jarURLs: {}", (Object) jarURLs);
 
     for (URL jarUrl : jarURLs) {
       ClassLoader classLoader = new URLClassLoader(new URL[] {jarUrl});

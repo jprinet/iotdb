@@ -48,12 +48,10 @@
         <dependency>
             <groupId>org.apache.tsfile</groupId>
             <artifactId>common</artifactId>
-            <version>${tsfile.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tsfile</groupId>
             <artifactId>tsfile</artifactId>
-            <version>${tsfile.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.iotdb</groupId>
@@ -104,17 +102,6 @@
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!--
                   The feature plugin doesn't correctly attach the generated feature file so it
                   wouldn't be signed and hashed during a release build. By manually-attaching it
@@ -210,8 +197,8 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven.assembly.version}</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -220,19 +207,17 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <!-- bind to the packaging phase -->
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
-                        <!-- this is used for inheritance merges -->
-                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
     <profiles>
-        <profile>
+        <!--profile>
             <id>only-eclipse</id>
             <activation>
                 <property>
@@ -268,7 +253,7 @@
                     </plugins>
                 </pluginManagement>
             </build>
-        </profile>
+        </profile-->
         <profile>
             <id>skipTsfileTests</id>
             <activation>
