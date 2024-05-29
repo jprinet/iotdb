@@ -19,6 +19,8 @@
 
 package org.apache.iotdb.library.dprofile;
 
+import com.ggalmazor.ltdownsampling.LTThreeBuckets;
+import com.ggalmazor.ltdownsampling.Point;
 import org.apache.iotdb.library.util.NoNumberException;
 import org.apache.iotdb.library.util.Util;
 import org.apache.iotdb.udf.api.UDTF;
@@ -33,8 +35,6 @@ import org.apache.iotdb.udf.api.customizer.strategy.RowByRowAccessStrategy;
 import org.apache.iotdb.udf.api.customizer.strategy.SlidingSizeWindowAccessStrategy;
 import org.apache.iotdb.udf.api.type.Type;
 
-import com.github.ggalmazor.ltdownsampling.LTThreeBuckets;
-import com.github.ggalmazor.ltdownsampling.Point;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
